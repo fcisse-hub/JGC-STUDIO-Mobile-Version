@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JGC Studio - Bureau Interactif | Mobile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a961;
+            --gold-light: #dfc27a;
+            --gold-dark: #a38950;
+            --bg: #0a0a0a;
+            --text: #d4c5a9;
+            --text-muted: #a39274;
+            --border: rgba(201, 169, 97, 0.2);
+            --modal-bg: linear-gradient(135deg, #2a2218 0%, #1a1510 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'EB Garamond', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════
+           HEADER MOBILE
+        ═══════════════════════════════ */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 14px 20px;
+            background: rgba(10,10,10,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.03em;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* ═══════════════════════════════
+           NAV DRAWER
+        ═══════════════════════════════ */
+        .nav-drawer {
+            position: fixed;
+            top: 0; right: -100%;
+            width: 75%;
+            max-width: 300px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a1510 0%, #0f0d09 100%);
+            border-left: 1px solid var(--border);
+            z-index: 600;
+            padding: 80px 30px 40px;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-drawer.open { right: 0; }
+
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 590;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-overlay.visible { opacity: 1; pointer-events: all; }
+
+        .nav-drawer a {
+            display: block;
+            padding: 14px 0;
+            color: var(--text);
+            text-decoration: none;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border);
+            transition: color 0.3s;
+        }
+
+        .nav-drawer a:hover, .nav-drawer a:active { color: var(--gold); }
+
+        .nav-drawer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            color: var(--gold);
+            opacity: 0.7;
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        /* ═══════════════════════════════
+           WELCOME OVERLAY
+        ═══════════════════════════════ */
+        .welcome-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.93);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            opacity: 1;
+            pointer-events: all;
+            transition: opacity 0.8s ease;
+        }
+
+        .welcome-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .welcome-box {
+            background: linear-gradient(135deg, rgba(42,34,24,0.97) 0%, rgba(22,18,13,0.97) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 36px 28px;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+            animation: smokeAppear 1.2s ease forwards;
+            box-shadow: 0 0 50px rgba(201,169,97,0.25), inset 0 0 30px rgba(201,169,97,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-box::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(201,169,97,0.06) 0%, transparent 70%);
+            animation: smokeFloat 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes smokeAppear {
+            0% { opacity: 0; transform: scale(0.85) translateY(20px); filter: blur(8px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        @keyframes smokeFloat {
+            0%, 100% { transform: translate(0,0); }
+            50% { transform: translate(8px,-8px); }
+        }
+
+        .welcome-box h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 18px;
+            text-shadow: 1px 1px 6px rgba(0,0,0,0.5);
+        }
+
+        .welcome-box p {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .welcome-hint {
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(201,169,97,0.3);
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .welcome-btn {
+            margin-top: 22px;
+            display: inline-block;
+            padding: 12px 32px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+
+        .welcome-btn:hover, .welcome-btn:active {
+            background: var(--gold);
+            color: var(--bg);
+        }
+
+        /* ═══════════════════════════════
+           MAIN — IMAGE SECTIONS
+        ═══════════════════════════════ */
+        main {
+            padding-top: 54px; /* header height */
+        }
+
+        .scene {
+            position: relative;
+            width: 100%;
+            height: 100svh;
+            min-height: 500px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .scene-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .scene:active .scene-image {
+            transform: scale(1.02);
+        }
+
+        /* Gradient overlay at bottom for label */
+        .scene-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 45%;
+            background: linear-gradient(to top, rgba(5,3,2,0.88) 0%, rgba(5,3,2,0.3) 60%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* Tap indicator */
+        .scene-tap {
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .scene-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gold-light);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .scene-pulse {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(100,200,255,0.7) 0%, rgba(100,200,255,0.3) 50%, transparent 100%);
+            animation: pulse 2s ease-in-out infinite;
+            position: relative;
+        }
+
+        .scene-pulse::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(100,200,255,0.5);
+            animation: ripplePulse 2s ease-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        @keyframes ripplePulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        /* ═══════════════════════════════
+           MODAL
+        ═══════════════════════════════ */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 800;
+            align-items: flex-end;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        .modal.active { display: flex; }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-sheet {
+            background: linear-gradient(170deg, #2e2519 0%, #1a150f 100%);
+            border: 1px solid rgba(201,169,97,0.35);
+            border-bottom: none;
+            border-radius: 20px 20px 0 0;
+            padding: 24px 22px 40px;
+            width: 100%;
+            max-height: 82vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 -8px 40px rgba(201,169,97,0.15);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(201,169,97,0.3);
+            border-radius: 4px;
+            margin: 0 auto 20px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 18px;
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 1.6rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+        }
+
+        .modal-sheet h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.55rem;
+            color: var(--gold);
+            margin-bottom: 18px;
+            padding-right: 30px;
+            line-height: 1.3;
+        }
+
+        .modal-sheet p {
+            line-height: 1.8;
+            margin-bottom: 14px;
+            font-size: 0.97rem;
+        }
+
+        .modal-sheet ul {
+            margin-left: 18px;
+            margin-bottom: 14px;
+        }
+
+        .modal-sheet li {
+            line-height: 1.8;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .modal-sheet a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .modal-sheet a:hover { text-decoration: underline; }
+
+        .modal-accent {
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        /* ═══════════════════════════════
+           MUSIC PLAYER
+        ═══════════════════════════════ */
+        .music-player {
+            position: fixed;
+            bottom: 24px;
+            right: 16px;
+            background: rgba(32,25,16,0.95);
+            border: 1.5px solid rgba(201,169,97,0.35);
+            border-radius: 40px;
+            padding: 9px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 400;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transition: border-color 0.3s;
+        }
+
+        .music-player:hover { border-color: var(--gold); }
+
+        .music-toggle {
+            width: 34px;
+            height: 34px;
+            border: none;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #1a1510;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .music-toggle:active { transform: scale(0.92); }
+
+        .music-waves {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .music-wave {
+            width: 3px;
+            height: 14px;
+            background: var(--gold);
+            border-radius: 3px;
+            animation: wave 1s ease-in-out infinite;
+        }
+
+        .music-wave:nth-child(2) { animation-delay: 0.2s; }
+        .music-wave:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes wave {
+            0%, 100% { height: 6px; }
+            50% { height: 18px; }
+        }
+
+        .music-wave.paused { animation: none; height: 4px; }
+
+        /* ═══════════════════════════════
+           FOOTER
+        ═══════════════════════════════ */
+        footer {
+            padding: 24px 20px;
+            background: rgba(10,10,10,0.95);
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            letter-spacing: 0.03em;
+        }
+
+        /* ═══════════════════════════════
+           TIMELINE STYLE (for frame/parcours)
+        ═══════════════════════════════ */
+        .timeline-entry {
+            border-left: 2px solid var(--gold);
+            padding-left: 16px;
+            margin-bottom: 18px;
+        }
+
+        .timeline-date {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .link-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+        }
+
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            color: var(--gold) !important;
+            font-size: 0.88rem;
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 0.04em;
+            text-decoration: none !important;
+            transition: all 0.3s;
+        }
+
+        .link-btn:hover, .link-btn:active {
+            background: var(--gold);
+            color: var(--bg) !important;
+        }
+
+        /* ═══════════════════════════════
+           SCROLL INDICATOR (first scene)
+        ═══════════════════════════════ */
+        .scroll-hint {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.6;
+            animation: fadeInOut 3s ease-in-out 2s forwards;
+        }
+
+        .scroll-hint span {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            writing-mode: vertical-rl;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .scroll-arrow {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            animation: scrollArrow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes scrollArrow {
+            0% { transform: scaleY(0); transform-origin: top; }
+            50% { transform: scaleY(1); transform-origin: top; }
+            51% { transform: scaleY(1); transform-origin: bottom; }
+            100% { transform: scaleY(0); transform-origin: bottom; }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0.6; }
+            70% { opacity: 0.6; }
+            100% { opacity: 0; pointer-events: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ════════════════════════════════
+         HEADER
+    ════════════════════════════════ -->
+    <header>
+        <div class="logo">JGC Studio</div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Menu" onclick="toggleNav()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <!-- NAV DRAWER -->
+    <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
+    <nav class="nav-drawer" id="navDrawer">
+        <a href="#scene-laptop" onclick="closeNav()">💻 Compétences</a>
+        <a href="#scene-typewriter" onclick="closeNav()">⌨️ Storytelling</a>
+        <a href="#scene-frame" onclick="closeNav()">🖼️ Parcours</a>
+        <a href="#scene-mic" onclick="closeNav()">🎙️ Podcast</a>
+        <a href="#scene-tea" onclick="closeNav()">☕ Philosophie</a>
+        <a href="#scene-parchemins" onclick="closeNav()">📜 Écriture</a>
+        <a href="#scene-lamp" onclick="closeNav()">💡 Contact</a>
+        <a href="#scene-book" onclick="closeNav()">📚 Savoirs</a>
+        <a href="https://journalistgeocultures.com/" target="_blank" onclick="closeNav()">→ Le Blog</a>
+        <a href="https://fcisse-hub.github.io/Portfolio/" target="_blank" onclick="closeNav()">→ Portfolio</a>
+        <div class="nav-drawer-logo">© 2024 JGC Studio · Sabine F. Cissé</div>
+    </nav>
+
+    <!-- ════════════════════════════════
+         WELCOME OVERLAY
+    ════════════════════════════════ -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="welcome-box">
+            <h1>Bienvenue</h1>
+            <p>Je suis <strong>Sabine F. Cissé</strong>, créatrice d'expériences numériques immersives chez <strong>JGC Studio</strong>.</p>
+            <p>Entrez dans mon univers où design, technologie et storytelling se rencontrent.</p>
+            <p class="welcome-hint">✨ Touchez chaque image pour découvrir mon histoire…</p>
+            <button class="welcome-btn" onclick="hideWelcome()">Entrer</button>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════
+         MAIN — 8 SCENES
+    ════════════════════════════════ -->
+    <main>
+
+        <!-- 1. LAPTOP — Compétences -->
+        <section class="scene" id="scene-laptop" onclick="openModal('laptop')">
+            <img class="scene-image" src="./images/1_LAPTOP_JGC_STUDIO_MOBILE.png" alt="L'espace de création" loading="eager">
+            <div class="scene-overlay"></div>
+            <div class="scene-tap">
+                <div class="scene-label">💻 Mon Espace de Création</div>
+                <div class="scene-pulse"></div>
+            </div>
+            <div class="scroll-hint">
+                <span>Défiler</span>
+                <div class="scroll-arrow"></div>
+            </div>
+        </section>
+
+        <!-- 2. TYPEWRITER — Storytelling -->
+        <section class="scene" id="scene-typewriter" onclick="openModal('typewriter')">
+            <img class="scene-image" src="./images/3_TYPEWRITER_JGC_STUDIO_MOBILE.png" alt="L'art du storytelling" loading="lazy">
+            <div class="scene-overlay"></div>
+            <div class="scene-tap">
+                <div class="scene-label">⌨️ L'Art du Storytelling</div>
+                <div class="scene-pulse"></div>
+            </div>
+        </section>
+
+        <!-- 3. FRAME — Parcours / Identité -->
+        <section class="scene" id="scene-frame" onclick="openModal('frame')">
+            <img class="scene-image" src="./images/2_FRAME_JGC_STUDIO_MOBILE.png" alt="Mon histoire" loading="lazy">
+            <div class="scene-overlay"></div>
+            <div class="scene-tap">
+                <div class="scene-label">🖼️ Sabine F. Cissé</div>
+                <div class="scene-pulse"></div>
+            </div>
+        </section>
+
+        <!-- 4. MIC — Podcast -->
+        <section class="scene" id="scene-mic" onclick="openModal('mic')">
+            <img class="scene-image" src="./images/5_MIC_JGC_STUDIO_MOBILE.png" alt="La voix de mes projets" loading="lazy">
+            <div class="scene-overlay"></div>
+            <div class="scene-tap">
+                <div class="scene-label">🎙️ La Voix de Mes Projets</div>
+                <div class="scene-pulse"></div>
+            </div>
+        </section>
+
+        <!-- 5. TEA — Moments de réflexion -->
+        <section class="scene" id="scene-tea" onclick="openModal('tea')">
+            <img class="scene-image" src="./images/7_TEA_JGC_STUDIO_MOBILE.png" alt="Moments de réflexion" loading="lazy">
+            <div class="scene-overlay"></div>
+            <div class="scene-tap">
+                <div class="scene-label">☕ Moments de Réflexion</div>
+                <div class="scene-pulse"></div>
+            </div>
+        </section>
+
+        <!-- 6. PARCHEMINS — Univers d'écriture / Blog -->
+        <section class="scene" id="scene-parchemins" onclick="openModal('parchemins')">
+            <img class="scene-image" src="./images/8_PARCHEMINS_JGC_STUDIO_MOBILE.png" alt="Mon univers d'écriture" loading="lazy">
+            <div class="scene-overlay"></div>
+            <div class="scene-tap">
+                <div class="scene-label">📜 Mon Univers d'Écriture</div>
+                <div class="scene-pulse"></div>
+            </div>
+        </section>
+
+        <!-- 7. LAMP — Contact -->
+        <section class="scene" id="scene-lamp" onclick="openModal('lamp')">
+            <img class="scene-image" src="./images/6_LAMP_JGC_STUDIO_MOBILE.png" alt="Contact et collaboration" loading="lazy">
+            <div class="scene-overlay"></div>
+            <div class="scene-tap">
+                <div class="scene-label">💡 Contact &amp; Collaboration</div>
+                <div class="scene-pulse"></div>
+            </div>
+        </section>
+
+        <!-- 8. BOOK — Savoirs -->
+        <section class="scene" id="scene-book" onclick="openModal('book')">
+            <img class="scene-image" src="./images/4_BOOK_JGC_STUDIO_MOBILE.png" alt="Ma bibliothèque de savoirs" loading="lazy">
+            <div class="scene-overlay"></div>
+            <div class="scene-tap">
+                <div class="scene-label">📚 Ma Bibliothèque de Savoirs</div>
+                <div class="scene-pulse"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ════════════════════════════════
+         FOOTER
+    ════════════════════════════════ -->
+    <footer>
+        © 2024 JGC Studio — Sabine F. Cissé | Tous droits réservés
+    </footer>
+
+    <!-- ════════════════════════════════
+         MODAL (bottom sheet)
+    ════════════════════════════════ -->
+    <div id="modal" class="modal" onclick="handleModalClick(event)">
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <div class="modal-handle"></div>
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════
+         MUSIC PLAYER
+    ════════════════════════════════ -->
+    <div class="music-player">
+        <button class="music-toggle" id="musicToggle" onclick="toggleMusic()">▶</button>
+        <div class="music-waves" id="musicWaves">
+            <div class="music-wave paused"></div>
+            <div class="music-wave paused"></div>
+            <div class="music-wave paused"></div>
+        </div>
+    </div>
+
+    <!-- Audio -->
+    <audio id="bgMusic" loop>
+        <source src="https://journalistgeocultures.wordpress.com/wp-content/uploads/2026/04/rhian-sheehan-la-boite-a-musique-eclise-remix.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ════════════════════════════════
+         JAVASCRIPT
+    ════════════════════════════════ -->
+    <script>
+
+        // ── MODAL CONTENT ─────────────────────────────────────────────
+
+        const modalContent = {
+
+            laptop: {
+                title: "💻 Mon Espace de Création",
+                body: `
+                    <p>C'est ici que naissent toutes mes créations numériques. Mon ordinateur est bien plus qu'un outil — c'est une porte vers l'infini des possibilités créatives.</p>
+                    <p><strong>Mes compétences techniques :</strong></p>
+                    <ul>
+                        <li>🎨 <strong>Design UI/UX</strong> : Figma, Adobe XD, Sketch</li>
+                        <li>💻 <strong>Développement Web</strong> : HTML5, CSS3, JavaScript, React.js</li>
+                        <li>✨ <strong>Animation</strong> : GSAP, Three.js, WebGL</li>
+                        <li>🎬 <strong>Motion Design</strong> : After Effects, Premiere Pro, Remotion, Jitter, Runway</li>
+                        <li>📡 <strong>Distribution multimédia</strong> : AFP, ANSA, VWD, NTB et fils internationaux</li>
+                    </ul>
+                    <p class="modal-accent">⚡ Des heures de création transformées en expériences mémorables.</p>
+                `
+            },
+
+            typewriter: {
+                title: "⌨️ L'Art du Storytelling",
+                body: `
+                    <p>Cette machine à écrire vintage représente ma passion pour le storytelling. Dans le monde digital, raconter une histoire captivante est ce qui fait la différence.</p>
+                    <p><strong>Ma philosophie narrative :</strong></p>
+                    <ul>
+                        <li>📖 Chaque projet raconte une histoire unique</li>
+                        <li>✨ L'expérience utilisateur avant tout</li>
+                        <li>🎭 Créer l'émotion à travers le design</li>
+                        <li>🔮 Le mystère comme moteur d'exploration</li>
+                    </ul>
+                    <p>Ce site interactif est lui-même une démonstration de cette approche : chaque interaction révèle un nouveau chapitre de mon histoire professionnelle.</p>
+                    <p class="modal-accent">« L'art véritable se cache dans les détails que personne ne cherche. »</p>
+                    <div class="link-row">
+                        <a class="link-btn" href="https://journalistgeocultures.com/" target="_blank">→ JGC Blog</a>
+                    </div>
+                `
+            },
+
+            frame: {
+                title: "Sabine F. Cissé",
+                body: `
+                    <p>Éditrice multimédia senior · Motion designer · Directrice artistique.</p>
+                    <p><strong>Mon parcours</strong></p>
+                    <div class="timeline-entry">
+                        <div class="timeline-date">2015 – Présent</div>
+                        <p><strong>Éditrice Multimédia Senior</strong> — Business Wire<br>
+                        Distribution de contenu multimédia pour clients internationaux. Contrôle qualité éditorial, optimisation SEO, gestion de flux AFP, ANSA, VWD, NTB et autres fils d'agences. Workflows multilingues et édition technique de contenus corporate.</p>
+                    </div>
+                    <div class="timeline-entry">
+                        <div class="timeline-date">2015 – Présent</div>
+                        <p><strong>Fondatrice</strong> — JGC Blog (Journalist GeoCultures)<br>
+                        Blog d'analyse littéraire et culturelle. Archives depuis 2015.</p>
+                    </div>
+                    <div class="timeline-entry">
+                        <div class="timeline-date">2024 – Présent</div>
+                        <p><strong>Motion Designer Senior &amp; Directrice Artistique</strong> — JGC Studio<br>
+                        Motion design, stratégie narrative transmédia. Projet « From Page to Stage » autour de Chronicle of Evana. Direction artistique Dark Academia.</p>
+                    </div>
+                    <p style="font-style:italic; color:var(--text-muted); margin-top:10px;">10 années d'expérience | Business Wire + projets créatifs professionnels</p>
+                    <div class="link-row">
+                        <a class="link-btn" href="https://fcisse-hub.github.io/Portfolio/" target="_blank">→ Portfolio</a>
+                        <a class="link-btn" href="https://www.linkedin.com/in/sabinecisse/" target="_blank">→ LinkedIn</a>
+                    </div>
+                `
+            },
+
+            mic: {
+                title: "🎙️ La Voix de Mes Projets",
+                body: `
+                    <p>Ce microphone symbolise l'importance de la communication dans mon travail. Chaque projet a sa propre voix, sa propre histoire à raconter.</p>
+                    <p><strong>Services de production audio/vidéo :</strong></p>
+                    <ul>
+                        <li>🎥 Production vidéo corporate</li>
+                        <li>🎬 Motion design et animation</li>
+                        <li>🎵 Design sonore et mixage</li>
+                        <li>📺 Contenus pour réseaux sociaux</li>
+                    </ul>
+                    <p>Que ce soit pour des vidéos promotionnelles, des explainers animés ou du contenu social media, je donne vie aux messages de mes clients.</p>
+                    <p class="modal-accent">🎙️ Podcast en développement — à suivre bientôt.</p>
+                `
+            },
+
+            tea: {
+                title: "☕ Moments de Réflexion",
+                body: `
+                    <p>Cette tasse de thé symbolise les moments de pause créative, essentiels à tout processus de création.</p>
+                    <p><strong>Ma philosophie de travail :</strong></p>
+                    <ul>
+                        <li>🧘 L'équilibre entre action et réflexion</li>
+                        <li>💭 Les meilleures idées naissent dans le calme</li>
+                        <li>🎯 Focus et présence dans chaque projet</li>
+                        <li>🌱 Croissance continue et apprentissage</li>
+                    </ul>
+                    <p>Derrière chaque grand projet se cachent des heures de réflexion, d'itération et de perfectionnement. La qualité demande du temps et de l'attention.</p>
+                    <p class="modal-accent">✨ « La créativité exige du courage et de la patience. »</p>
+                `
+            },
+
+            parchemins: {
+                title: "📜 Mon Univers d'Écriture",
+                body: `
+                    <p>L'écriture est le fil conducteur de toute mon activité créative — de l'analyse littéraire au storytelling transmédiatique.</p>
+                    <p><strong>Mes espaces d'écriture :</strong></p>
+                    <ul>
+                        <li>📓 <strong>JGC Blog</strong> — Journalist GeoCultures : analyses littéraires et culturelles depuis 2015</li>
+                        <li>✍️ <strong>Substack</strong> — Newsletter créative (à venir)</li>
+                        <li>📚 <strong>Chronicle of Evana</strong> — Fiction en cours, projet « From Page to Stage »</li>
+                        <li>🏛️ Roman en développement, set in Lyon</li>
+                    </ul>
+                    <p>Chaque texte est un acte de cartographie : il trace les contours d'un monde intérieur que le design, le son et l'image viennent ensuite incarner.</p>
+                    <p class="modal-accent">« I am the captain of my soul. » — W.E. Henley, Invictus</p>
+                    <div class="link-row">
+                        <a class="link-btn" href="https://journalistgeocultures.com/" target="_blank">→ JGC Blog</a>
+                    </div>
+                `
+            },
+
+            lamp: {
+                title: "💡 Contact &amp; Collaboration",
+                body: `
+                    <p>Cette lampe illumine mes projets et symbolise les idées brillantes qui naissent de nos collaborations.</p>
+                    <p><strong>Vous avez un projet en tête ?</strong></p>
+                    <p>Je serais ravie d'échanger avec vous et de donner vie à vos idées les plus audacieuses.</p>
+                    <p><strong>Services proposés :</strong></p>
+                    <ul>
+                        <li>✨ Design UI/UX &amp; Prototypage</li>
+                        <li>💻 Développement Web Frontend</li>
+                        <li>🎨 Identité Visuelle &amp; Branding</li>
+                        <li>🎬 Production Vidéo &amp; Animation</li>
+                        <li>📱 Expériences Interactives</li>
+                    </ul>
+                    <p><strong>Contactez-moi :</strong></p>
+                    <p>📧 <a href="mailto:jgcultures@gmail.com">jgcultures@gmail.com</a></p>
+                    <div class="link-row">
+                        <a class="link-btn" href="https://www.linkedin.com/in/sabinecisse/" target="_blank">💼 LinkedIn</a>
+                        <a class="link-btn" href="https://fcisse-hub.github.io/Portfolio/" target="_blank">🌐 Portfolio</a>
+                    </div>
+                    <p class="modal-accent" style="margin-top:16px;">✨ Transformons vos idées en expériences inoubliables.</p>
+                `
+            },
+
+            book: {
+                title: "📚 Ma Bibliothèque de Savoirs",
+                body: `
+                    <p>Cette bibliothèque représente l'accumulation de connaissances et d'expériences qui nourrissent ma créativité.</p>
+                    <p><strong>Domaines d'expertise :</strong></p>
+                    <ul>
+                        <li>📐 Design thinking &amp; méthodologies créatives</li>
+                        <li>💡 Innovation &amp; recherche UX</li>
+                        <li>🎨 Théorie des couleurs &amp; composition</li>
+                        <li>📱 Responsive design &amp; accessibilité</li>
+                        <li>🔧 Architecture de l'information</li>
+                        <li>📡 Distribution éditoriale internationale</li>
+                    </ul>
+                    <p>Chaque livre représente une compétence acquise, un projet complété, une leçon apprise. La connaissance est le fondement de toute création significative.</p>
+                    <p class="modal-accent">📖 Formation continue &amp; veille technologique constante.</p>
+                `
+            }
+        };
+
+        // ── NAV ────────────────────────────────────────────────────────
+
+        function toggleNav() {
+            const btn = document.getElementById('hamburgerBtn');
+            const drawer = document.getElementById('navDrawer');
+            const overlay = document.getElementById('navOverlay');
+            btn.classList.toggle('open');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('visible');
+        }
+
+        function closeNav() {
+            document.getElementById('hamburgerBtn').classList.remove('open');
+            document.getElementById('navDrawer').classList.remove('open');
+            document.getElementById('navOverlay').classList.remove('visible');
+        }
+
+        // ── WELCOME ────────────────────────────────────────────────────
+
+        function hideWelcome() {
+            document.getElementById('welcomeOverlay').classList.add('hidden');
+        }
+
+        // Auto-hide after 5 seconds
+        window.addEventListener('load', () => {
+            setTimeout(hideWelcome, 5000);
+        });
+
+        // ── MODAL ──────────────────────────────────────────────────────
+
+        function openModal(key) {
+            const data = modalContent[key];
+            if (!data) return;
+            document.getElementById('modalBody').innerHTML = `<h2>${data.title}</h2>${data.body}`;
+            const modal = document.getElementById('modal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function handleModalClick(e) {
+            if (e.target.id === 'modal') closeModal();
+        }
+
+        // Swipe down to close
+        let touchStartY = 0;
+        document.querySelector('.modal-sheet') && document.getElementById('modal').addEventListener('touchstart', e => {
+            touchStartY = e.touches[0].clientY;
+        });
+        document.getElementById('modal').addEventListener('touchend', e => {
+            const diff = e.changedTouches[0].clientY - touchStartY;
+            if (diff > 80) closeModal();
+        });
+
+        // ESC key
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ── MUSIC ──────────────────────────────────────────────────────
+
+        const audio = document.getElementById('bgMusic');
+        const toggleBtn = document.getElementById('musicToggle');
+        const waves = document.querySelectorAll('.music-wave');
+        let isPlaying = false;
+
+        audio.volume = 0.45;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                toggleBtn.textContent = '▶';
+                waves.forEach(w => w.classList.add('paused'));
+                isPlaying = false;
+            } else {
+                audio.play().catch(() => {});
+                toggleBtn.textContent = '⏸';
+                waves.forEach(w => w.classList.remove('paused'));
+                isPlaying = true;
+            }
+        }
+
+    </script>
+</body>
+</html>
