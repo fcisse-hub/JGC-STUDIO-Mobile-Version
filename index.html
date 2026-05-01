@@ -618,7 +618,7 @@
             width: 32px;
             height: 32px;
             border: none;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-) 100%);
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -684,6 +684,69 @@
             font-size: 0.9rem;
         }
 
+
+        /* ── Language Switcher (nav drawer) ── */
+        .nav-lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0 6px;
+            margin-top: 6px;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-lang-switch a {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.25s;
+            letter-spacing: 0.04em;
+        }
+
+        .nav-lang-switch a:hover,
+        .nav-lang-switch a:active { color: var(--gold); }
+
+        .nav-lang-switch .lang-active {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .nav-lang-divider {
+            color: rgba(201,169,97,0.3);
+            font-size: 0.8rem;
+        }
+
+        
+
+        /* ── Language Switcher (header) ── */
+        .lang-switch-header {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-right: 14px;
+        }
+
+        .lang-switch-header a {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            transition: color 0.25s;
+        }
+
+        .lang-switch-header a:hover { color: var(--gold); }
+
+        .lang-switch-header .lang-active {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .lang-switch-header .lang-sep {
+            color: rgba(201,169,97,0.35);
+            font-size: 0.75rem;
+        }
     </style>
 </head>
 <body>
@@ -693,6 +756,7 @@
     ════════════════════════════════ -->
     <header>
         <div class="logo">JGC Studio</div>
+        <div class="lang-switch-header"><a href="index.html" class="lang-active">FR</a><span class="lang-sep">|</span><a href="index-en.html">EN</a></div>
         <button class="hamburger" id="hamburgerBtn" aria-label="Menu" onclick="toggleNav()">
             <span></span><span></span><span></span>
         </button>
@@ -720,7 +784,12 @@
                 <a href="https://journalistgeocultures.com/" target="_blank" onclick="closeNav()">→ Le Blog JGC</a>
                 <a href="https://fcisse-hub.github.io/Portfolio/" target="_blank" onclick="closeNav()">→ Portfolio Professionnel</a>
             </div>
-        </div>
+            <div class="nav-lang-switch">
+                <a href="index.html" class="lang-active">🇫🇷 FR</a>
+                <span class="nav-lang-divider">|</span>
+                <a href="index-en.html">EN 🇬🇧</a>
+            </div>
+</div>
         <div class="nav-drawer-footer">© 2024–2026 JGC Studio · Sabine F. Cissé</div>
     </nav>
 
@@ -976,16 +1045,21 @@
             mic: {
                 title: "🎙️ La Voix de JGC",
                 body: `
-                    <p>Ce microphone symbolise l'importance de la communication dans mon travail. Chaque projet a sa propre voix, sa propre histoire à raconter.</p>
-                    <p><strong>Services de production audio/vidéo :</strong></p>
+                    <p>Le microphone est au cœur de mon projet éditorial et transmédiatique. La voix est le vecteur de tout : culture, fiction, réflexion.</p>
+                    <p><strong>Productions audio &amp; vidéo :</strong></p>
                     <ul>
-                        <li>🎥 Production vidéo corporate</li>
-                        <li>🎬 Motion design et animation</li>
-                        <li>🎵 Design sonore et mixage</li>
-                        <li>📺 Contenus pour réseaux sociaux</li>
+                        <li>🎧 <strong>Podcast — <em>L'Encrier de Sabine</em></strong> : lectures audio des articles longue forme du JGC Blog (essais, réflexions, culture &amp; lifestyle)</li>
+                        <li>📻 <strong>Podfic — Chronicle of Evana</strong> : fiction audio sérielle en 6 épisodes</li>
+                        <li>🎬 <strong>Contenus vidéo bilingues</strong> : sous-titres FR/EN intégrés via workflow Whisper + Premiere Pro</li>
+                        <li>📱 <strong>Social media</strong> : TikTok, Instagram Reels, YouTube Shorts</li>
                     </ul>
-                    <p>Que ce soit pour des vidéos promotionnelles, des explainers animés ou du contenu social media, je donne vie aux messages de mes clients.</p>
-                    <p class="modal-accent">🎙️ Podcast en développement — à suivre bientôt.</p>
+                    <p><strong>Retrouvez les JGC en vidéo :</strong></p>
+                    <div class="link-row">
+                        <a class="link-btn" href="https://www.youtube.com/@Journalistgeocultures" target="_blank">▶ YouTube</a>
+                        <a class="link-btn" href="https://www.tiktok.com/@journalistgeoculturesoff" target="_blank">🎵 TikTok</a>
+                        <a class="link-btn" href="https://www.instagram.com/journalistgeoculturesoff/" target="_blank">📸 Instagram</a>
+                    </div>
+                    <p class="modal-accent" style="margin-top:16px;">✨ « Chaque histoire mérite d'être entendue. »</p>
                 `
             },
 
