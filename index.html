@@ -928,6 +928,22 @@
         </div>
     </div>
 
+    <!-- ════════════════════════════════
+         MUSIC PLAYER
+    ════════════════════════════════ -->
+    <div class="music-player">
+        <button class="music-toggle" id="musicToggle" onclick="toggleMusic()">▶</button>
+        <div class="music-waves">
+            <div class="music-wave paused"></div>
+            <div class="music-wave paused"></div>
+            <div class="music-wave paused"></div>
+        </div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://journalistgeocultures.wordpress.com/wp-content/uploads/2026/04/rhian-sheehan-la-boite-a-musique-eclise-remix.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
 
         // ── MODAL CONTENT ──────────────────────────────────────────────
@@ -1174,6 +1190,29 @@
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') closeModal();
         });
+
+        // ── MUSIC ───────────────────────────────────────────────────────
+
+        const audio    = document.getElementById('bgMusic');
+        const toggleBtn = document.getElementById('musicToggle');
+        const waves    = document.querySelectorAll('.music-wave');
+        let isPlaying  = false;
+
+        audio.volume = 0.45;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                toggleBtn.textContent = '▶';
+                waves.forEach(w => w.classList.add('paused'));
+                isPlaying = false;
+            } else {
+                audio.play().catch(() => {});
+                toggleBtn.textContent = '⏸';
+                waves.forEach(w => w.classList.remove('paused'));
+                isPlaying = true;
+            }
+        }
 
     </script>
 </body>
